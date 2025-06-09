@@ -1,4 +1,4 @@
-let employees=[];
+let employees = JSON.parse(localStorage.getItem("employee")) || [];
 let editIndex=null;
 
 const form=document.getElementById("employee-form");
@@ -28,6 +28,7 @@ form.addEventListener("submit",function(e){
         editIndex=null;
         form.querySelector("button").textContent ="Add Employee";
     }
+    localStorage.setItem("employee", JSON.stringify(employees));    
     form.reset();
     renderTable();
 });
@@ -35,6 +36,8 @@ form.addEventListener("submit",function(e){
 function renderTable()
 {
     tableBody.innerHTML="";
+    const employeesLocal = JSON.parse(localStorage.getItem("employee")) || [];
+    employees = employeesLocal;
     employees.forEach((emp,index)=>{
         const row=document.createElement("tr");
         row.innerHTML=`<td>${emp.name}</td>
@@ -50,22 +53,28 @@ function renderTable()
 
 function editEmployee(index)
 {
-    const emp=employees[index];
+    const employeesLocal = JSON.parse(localStorage.getItem("employee")) || [];
+    const emp = employeesLocal[index];
     nameInput.value=emp.name;
     emailInput.value=emp.email;
     roleInput.value=emp.role;
     editIndex=index;
+    localStorage.setItem("employee", JSON.stringify(emp));    
 
     form.querySelector("button").textContent ="Update Employee";
 }
 
 function deleteEmployee(index)
 {
-    const emp=employees[index];
-    nameInput.value=emp.name;
+    const employeesLocal = JSON.parse(localStorage.getItem("employee")) || [];
+    const emp = employeesLocal[index];
     if(confirm(`Are you sure, you want to delete Employee : ${emp.name}?`))
     {
         employees.splice(index,1);
+        localStorage.setItem("employee", JSON.stringify(employeesLocal));
+        employees = employeesLocal;
+        renderTable();
     }
     renderTable();
 }
+renderTable();
